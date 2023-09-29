@@ -1,0 +1,7 @@
+dolomite_sce
+============
+
+.. toctree::
+   :maxdepth: 4
+
+   dolomite_sce
