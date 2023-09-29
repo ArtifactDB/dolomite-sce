@@ -16,4 +16,4 @@ finally:
     del version, PackageNotFoundError
 
 
-from ._load_single_cell_experiment import load_single_cell_experiment
+from .load_single_cell_experiment import load_single_cell_experiment
