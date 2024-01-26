@@ -32,6 +32,7 @@ def test_stage_sce_basic():
 
     roundtrip = read_object(dir)
     assert roundtrip.assay_names == ["logcounts", "counts"]
+    assert se.main_experiment_name == roundtrip.main_experiment_name
 
 
 def test_stage_sce_with_dimdata_with_names():
