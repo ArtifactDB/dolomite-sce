@@ -5,10 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Save and write SingleCellExperiments in Python &#8212; dolomite-sce 0.1.0a0 documentation</title>
+    <title>Save and write SingleCellExperiments in Python &#8212; dolomite-sce 0.1.0 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
     <link rel="stylesheet" type="text/css" href="_static/alabaster.css?v=89af775e" />
-    <script src="_static/documentation_options.js?v=edcd63a1"></script>
+    <script src="_static/documentation_options.js?v=01f34227"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <link rel="index" title="Index" href="genindex.html" />
@@ -43,14 +43,60 @@
 [![Monthly Downloads](https://pepy.tech/badge/dolomite-sce/month)](https://pepy.tech/project/dolomite-sce)
 [![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&label=Twitter)](https://twitter.com/dolomite-sce)
 -->
-<p><a class="reference external" href="https://pyscaffold.org/"><img alt="Project generated with PyScaffold" src="https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold" /></a></p>
+<p><a class="reference external" href="https://pyscaffold.org/"><img alt="Project generated with PyScaffold" src="https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold" /></a>
+<a class="reference external" href="https://pypi.org/project/dolomite-sce/"><img alt="PyPI-Server" src="https://img.shields.io/pypi/v/dolomite-sce.svg" /></a>
+<img alt="Unit tests" src="https://github.com/ArtifactDB/dolomite-sce/actions/workflows/pypi-test.yml/badge.svg" /></p>
 <section class="tex2jax_ignore mathjax_ignore" id="save-and-write-singlecellexperiments-in-python">
-<h1>Save and write SingleCellExperiments in Python<a class="headerlink" href="#save-and-write-singlecellexperiments-in-python" title="Link to this heading">¶</a></h1>
+<h1>Save and write <code class="docutils literal notranslate"><span class="pre">SingleCellExperiments</span></code> in Python<a class="headerlink" href="#save-and-write-singlecellexperiments-in-python" title="Link to this heading">¶</a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
 <p>The <strong>dolomite-sce</strong> package is the Python counterpart to the <a class="reference external" href="https://github.com/ArtifactDB/alabaster.sce"><strong>alabaster.sce</strong></a> R package,
-providing methods for saving/reading <code class="docutils literal notranslate"><span class="pre">SingleCellExperiment</span></code> objects within the <a class="reference external" href="https://github.com/ArtifactDB/dolomite-base"><strong>dolomite</strong> framework</a>.
-Currently it’s just a stub but we hope to full functionality soon.</p>
+providing methods for saving/reading <code class="docutils literal notranslate"><span class="pre">SingleCellExperiment</span></code> objects within the <a class="reference external" href="https://github.com/ArtifactDB/dolomite-base"><strong>dolomite</strong> framework</a>.</p>
+</section>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading">¶</a></h2>
+<p>Let’s mock up a <code class="docutils literal notranslate"><span class="pre">SingleCellExperiment</span></code> that contains reduced dimensions and alternative experiments,</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">singlecellexperiment</span> <span class="kn">import</span> <span class="n">SingleCellExperiment</span>
+<span class="kn">import</span> <span class="nn">biocframe</span>
+<span class="kn">import</span> <span class="nn">numpy</span>
+
+<span class="n">sce</span> <span class="o">=</span> <span class="n">SingleCellExperiment</span><span class="p">(</span>
+     <span class="n">assays</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">200</span><span class="p">)},</span>
+     <span class="n">row_data</span><span class="o">=</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">(</span>
+          <span class="p">{</span><span class="s2">&quot;foo&quot;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">),</span> <span class="s2">&quot;bar&quot;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">)}</span>
+     <span class="p">),</span>
+     <span class="n">column_data</span><span class="o">=</span><span class="n">biocframe</span><span class="o">.</span><span class="n">BiocFrame</span><span class="p">(</span>
+          <span class="p">{</span><span class="s2">&quot;whee&quot;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">200</span><span class="p">),</span> <span class="s2">&quot;stuff&quot;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">200</span><span class="p">)}</span>
+     <span class="p">),</span>
+     <span class="n">reduced_dims</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;tsnooch&quot;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">200</span><span class="p">,</span> <span class="mi">4</span><span class="p">)},</span>
+     <span class="n">alternative_experiments</span><span class="o">=</span><span class="p">{</span>
+          <span class="s2">&quot;very_useful_modality&quot;</span><span class="p">:</span> <span class="n">SummarizedExperiment</span><span class="p">(</span>
+               <span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">200</span><span class="p">)}</span>
+          <span class="p">)</span>
+     <span class="p">},</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we can save it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dolomite_base</span> <span class="kn">import</span> <span class="n">save_object</span>
+<span class="kn">import</span> <span class="nn">dolomite_sce</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">mkdtemp</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mkdtemp</span><span class="p">(),</span> <span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="n">save_object</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>And load it again, e,g., in a new session:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">dolomite_base</span> <span class="kn">import</span> <span class="n">read_object</span>
+
+<span class="n">roundtrip</span> <span class="o">=</span> <span class="n">read_object</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+<span class="c1">## Class SingleCellExperiment with 1000 features and 200 cells</span>
+<span class="c1">##   assays: [&#39;counts&#39;]</span>
+<span class="c1">##   row_data: [&#39;foo&#39;]</span>
+<span class="c1">##   column_data: [&#39;whee&#39;]</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -74,6 +120,7 @@ Currently it’s just a stub but we hope to full functionality soon.</p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#quick-start">Quick start</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributions &amp; Help</a></li>
