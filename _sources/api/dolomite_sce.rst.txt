@@ -4,10 +4,18 @@ dolomite\_sce package
 Submodules
 ----------
 
-dolomite\_sce.load\_single\_cell\_experiment module
+dolomite\_sce.read\_single\_cell\_experiment module
 ---------------------------------------------------
 
-.. automodule:: dolomite_sce.load_single_cell_experiment
+.. automodule:: dolomite_sce.read_single_cell_experiment
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dolomite\_sce.save\_single\_cell\_experiment module
+---------------------------------------------------
+
+.. automodule:: dolomite_sce.save_single_cell_experiment
    :members:
    :undoc-members:
    :show-inheritance:
