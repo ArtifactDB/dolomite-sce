@@ -11,11 +11,62 @@
 -->
 
 [![Project generated with PyScaffold](https://img.shields.io/badge/-PyScaffold-005CA0?logo=pyscaffold)](https://pyscaffold.org/)
+[![PyPI-Server](https://img.shields.io/pypi/v/dolomite-sce.svg)](https://pypi.org/project/dolomite-sce/)
+![Unit tests](https://github.com/ArtifactDB/dolomite-sce/actions/workflows/pypi-test.yml/badge.svg)
 
-# Save and write SingleCellExperiments in Python
+# Save and write `SingleCellExperiments` in Python
 
 ## Introduction
 
 The **dolomite-sce** package is the Python counterpart to the [**alabaster.sce**](https://github.com/ArtifactDB/alabaster.sce) R package,
 providing methods for saving/reading `SingleCellExperiment` objects within the [**dolomite** framework](https://github.com/ArtifactDB/dolomite-base).
-Currently it's just a stub but we hope to full functionality soon.
+
+## Quick start
+
+Let's mock up a `SingleCellExperiment` that contains reduced dimensions and alternative experiments,
+
+```python
+from singlecellexperiment import SingleCellExperiment
+import biocframe
+import numpy
+
+sce = SingleCellExperiment(
+     assays={"counts": numpy.random.rand(1000, 200)},
+     row_data=biocframe.BiocFrame(
+          {"foo": numpy.random.rand(1000), "bar": numpy.random.rand(1000)}
+     ),
+     column_data=biocframe.BiocFrame(
+          {"whee": numpy.random.rand(200), "stuff": numpy.random.rand(200)}
+     ),
+     reduced_dims={"tsnooch": numpy.random.rand(200, 4)},
+     alternative_experiments={
+          "very_useful_modality": SummarizedExperiment(
+               {"counts": numpy.random.rand(100, 200)}
+          )
+     },
+)
+```
+
+Now we can save it:
+
+```python
+from dolomite_base import save_object
+import dolomite_sce
+import os
+from tempfile import mkdtemp
+
+path = os.path.join(mkdtemp(), "test")
+save_object(se, path)
+```
+
+And load it again, e,g., in a new session:
+
+```python
+from dolomite_base import read_object
+
+roundtrip = read_object(path)
+## Class SingleCellExperiment with 1000 features and 200 cells
+##   assays: ['counts']
+##   row_data: ['foo']
+##   column_data: ['whee']
+```
