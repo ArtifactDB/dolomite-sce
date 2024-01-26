@@ -102,8 +102,6 @@ def test_stage_sce_with_rdims_and_alts():
     save_object(se, dir)
 
     roundtrip = read_object(dir)
-
-    print(se.reduced_dim("tsnooch"), roundtrip.reduced_dim("tsnooch"))
     assert isinstance(roundtrip, SingleCellExperiment)
     assert numpy.allclose(se.row_data["foo"], roundtrip.row_data["foo"])
     assert numpy.allclose(se.column_data["stuff"], roundtrip.column_data["stuff"])
@@ -153,9 +151,6 @@ def test_empty_dimnames():
             row_names=["cell" + str(i) for i in range(200)]
         ),
     )
-
-    print(se.row_data)
-    print(se.get_row_data())
 
     dir = os.path.join(mkdtemp(), "sce_dimdata3")
     save_object(se, dir)

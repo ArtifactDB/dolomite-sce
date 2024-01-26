@@ -119,9 +119,6 @@ def save_single_cell_experiment(
 
     # save alt expts.
     _alt_names = x.get_alternative_experiment_names()
-    print(_alt_names)
-    print(x)
-    print(x.get_alternative_experiments())
     if len(_alt_names) > 0:
         _alt_path = os.path.join(path, "alternative_experiments")
         os.mkdir(_alt_path)
@@ -130,9 +127,7 @@ def save_single_cell_experiment(
             json.dump(_alt_names, handle)
 
         for _aidx, _aname in enumerate(_alt_names):
-            print(_aidx, _aname)
             _alt_save_path = os.path.join(_alt_path, str(_aidx))
-            print(x.alternative_experiment(_aname))
             try:
                 dl.save_object(
                     x.alternative_experiment(_aname),
