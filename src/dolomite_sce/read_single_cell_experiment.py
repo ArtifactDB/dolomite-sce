@@ -3,7 +3,6 @@ import os
 
 import dolomite_base as dl
 from dolomite_base.read_object import read_object_registry
-from dolomite_se import read_common_se_props
 from singlecellexperiment import SingleCellExperiment
 
 read_object_registry["single_cell_experiment"] = (
@@ -37,28 +36,21 @@ def read_single_cell_experiment(
         with file-backed arrays in the assays.
     """
 
-    _row_data, _column_data, _assays = read_common_se_props(path)
+    metadata["type"] = "range_summarized_experiment"
+    rse = dl.alt_read_object(path, metadata=metadata, **kwargs)
 
     _main_expt_name = None
     if "main_experiment_name" in metadata["single_cell_experiment"]:
         _main_expt_name = metadata["single_cell_experiment"]["main_experiment_name"]
 
     sce = SingleCellExperiment(
-        assays=_assays,
-        row_data=_row_data,
-        column_data=_column_data,
+        assays=rse.get_assays(),
+        row_data=rse.get_row_data(),
+        column_data=rse.get_column_data(),
+        row_ranges=rse.get_row_ranges(),
+        metadata=rse.get_metadata(),
         main_experiment_name=_main_expt_name,
     )
-
-    _meta_path = os.path.join(path, "other_data")
-    if os.path.exists(_meta_path):
-        _meta = dl.alt_read_object(_meta_path, **kwargs)
-        sce = sce.set_metadata(_meta.as_dict())
-
-    _ranges_path = os.path.join(path, "row_ranges")
-    if os.path.exists(_ranges_path):
-        _ranges = dl.alt_read_object(_ranges_path, **kwargs)
-        sce = sce.set_row_ranges(_ranges)
 
     _rdim_path = os.path.join(path, "reduced_dimensions")
     if os.path.exists(_rdim_path):
