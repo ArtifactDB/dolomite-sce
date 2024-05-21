@@ -2,8 +2,8 @@ import json
 import os
 
 import dolomite_base as dl
-from dolomite_se import save_common_se_props
 from singlecellexperiment import SingleCellExperiment
+from summarizedexperiment import RangedSummarizedExperiment
 
 
 @dl.save_object.register
@@ -46,13 +46,11 @@ def save_single_cell_experiment(
             alternative experiments.
 
         kwargs:
-            Further arguments, ignored.
+            Further arguments.
 
     Returns:
         ``x`` is saved to path.
     """
-    os.mkdir(path)
-
     if data_frame_args is None:
         data_frame_args = {}
 
@@ -65,34 +63,28 @@ def save_single_cell_experiment(
     if alt_expts_args is None:
         alt_expts_args = {}
 
-    _se_meta = f"{list(x.shape)}"
-
-    _sce_meta = '"single_cell_experiment": { "version": "1.0" }'
-    if x.get_main_experiment_name() is not None:
-        _sce_meta = (
-            '"single_cell_experiment": { "version": "1.0", "main_experiment_name": "'
-            + str(x.get_main_experiment_name())
-            + '" }'
-        )
-
-    with open(os.path.join(path, "OBJECT"), "w", encoding="utf-8") as handle:
-        handle.write(
-            '{ "type": "single_cell_experiment", '
-            + _sce_meta
-            + ", "
-            + '"ranged_summarized_experiment": { "version": "1.0" },'
-            + '"summarized_experiment": {"version": "1.0", "dimensions": '
-            + _se_meta
-            + " } }"
-        )
-
-    save_common_se_props(
-        x, path, data_frame_args=data_frame_args, assay_args=assay_args
+    ## Convert to RSE
+    _rse = RangedSummarizedExperiment(
+        assays=x.get_assays(),
+        row_data=x.get_row_data(),
+        column_data=x.get_column_data(),
+        row_ranges=x.get_row_ranges(),
+        row_names=x.get_row_names(),
+        column_names=x.get_column_names(),
+        metadata=x.get_metadata(),
+    )
+    dl.alt_save_object(
+        _rse, path, data_frame_args=data_frame_args, assay_args=assay_args, **kwargs
     )
 
-    _ranges = x.get_row_ranges()
-    if _ranges is not None:
-        dl.save_object(_ranges, path=os.path.join(path, "row_ranges"))
+    # Modify OBJECT
+    _info = dl.read_object_file(path)
+    _info["single_cell_experiment"] = {"version": "1.0"}
+    if x.get_main_experiment_name() is not None:
+        _info["single_cell_experiment"]["main_experiment_name"] = str(
+            x.get_main_experiment_name()
+        )
+    dl.save_object_file(path, "single_cell_experiment", _info)
 
     # save rdims
     _rdim_names = x.get_reduced_dim_names()
@@ -106,7 +98,9 @@ def save_single_cell_experiment(
         for _aidx, _aname in enumerate(_rdim_names):
             _rdim_save_path = os.path.join(_rdim_path, str(_aidx))
             try:
-                dl.save_object(x.reduced_dim(_aname), path=_rdim_save_path, **rdim_args)
+                dl.alt_save_object(
+                    x.reduced_dim(_aname), path=_rdim_save_path, **rdim_args, **kwargs
+                )
             except Exception as ex:
                 raise RuntimeError(
                     "failed to stage reduced dimension '"
@@ -129,10 +123,11 @@ def save_single_cell_experiment(
         for _aidx, _aname in enumerate(_alt_names):
             _alt_save_path = os.path.join(_alt_path, str(_aidx))
             try:
-                dl.save_object(
+                dl.alt_save_object(
                     x.alternative_experiment(_aname),
                     path=_alt_save_path,
                     **alt_expts_args,
+                    **kwargs,
                 )
             except Exception as ex:
                 raise RuntimeError(
