@@ -28,7 +28,7 @@ def read_single_cell_experiment(
             Metadata for the object.
 
         kwargs:
-            Further arguments, ignored.
+            Further arguments.
 
     Returns:
         A

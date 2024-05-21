@@ -2,8 +2,8 @@ import json
 import os
 
 import dolomite_base as dl
-from dolomite_se import save_common_se_props
 from singlecellexperiment import SingleCellExperiment
+from summarizedexperiment import RangedSummarizedExperiment
 
 
 @dl.save_object.register
@@ -46,13 +46,11 @@ def save_single_cell_experiment(
             alternative experiments.
 
         kwargs:
-            Further arguments, ignored.
+            Further arguments.
 
     Returns:
         ``x`` is saved to path.
     """
-    os.mkdir(path)
-
     if data_frame_args is None:
         data_frame_args = {}
 
@@ -65,8 +63,18 @@ def save_single_cell_experiment(
     if alt_expts_args is None:
         alt_expts_args = {}
 
-    save_common_se_props(
-        x, path, data_frame_args=data_frame_args, assay_args=assay_args
+    ## Convert to RSE
+    _rse = RangedSummarizedExperiment(
+        assays=x.get_assays(),
+        row_data=x.get_row_data(),
+        column_data=x.get_column_data(),
+        row_ranges=x.get_row_ranges(),
+        row_names=x.get_row_names(),
+        column_names=x.get_column_names(),
+        metadata=x.get_metadata(),
+    )
+    dl.alt_save_object(
+        _rse, path, data_frame_args=data_frame_args, assay_args=assay_args, **kwargs
     )
 
     # Modify OBJECT
@@ -77,11 +85,6 @@ def save_single_cell_experiment(
             x.get_main_experiment_name()
         )
     dl.save_object_file(path, "single_cell_experiment", _info)
-
-    # save row ranges
-    _ranges = x.get_row_ranges()
-    if _ranges is not None:
-        dl.alt_save_object(_ranges, path=os.path.join(path, "row_ranges"), **kwargs)
 
     # save rdims
     _rdim_names = x.get_reduced_dim_names()
