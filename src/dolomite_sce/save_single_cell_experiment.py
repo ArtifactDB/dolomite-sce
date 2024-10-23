@@ -2,6 +2,7 @@ import json
 import os
 
 import dolomite_base as dl
+import dolomite_se as dlse
 from singlecellexperiment import SingleCellExperiment
 from summarizedexperiment import RangedSummarizedExperiment
 
@@ -63,18 +64,9 @@ def save_single_cell_experiment(
     if alt_expts_args is None:
         alt_expts_args = {}
 
-    ## Convert to RSE
-    _rse = RangedSummarizedExperiment(
-        assays=x.get_assays(),
-        row_data=x.get_row_data(),
-        column_data=x.get_column_data(),
-        row_ranges=x.get_row_ranges(),
-        row_names=x.get_row_names(),
-        column_names=x.get_column_names(),
-        metadata=x.get_metadata(),
-    )
-    dl.alt_save_object(
-        _rse, path, data_frame_args=data_frame_args, assay_args=assay_args, **kwargs
+    # see comments in save_ranged_summarized_experiment in dolomite_se.
+    dlse.save_ranged_summarized_experiment(
+        x, path, data_frame_args=data_frame_args, assay_args=assay_args, **kwargs
     )
 
     # Modify OBJECT
