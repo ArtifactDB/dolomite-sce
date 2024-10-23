@@ -2,6 +2,7 @@ import json
 import os
 
 import dolomite_base as dl
+import dolomite_se as dlse
 from dolomite_base.read_object import read_object_registry
 from singlecellexperiment import SingleCellExperiment
 
@@ -36,8 +37,8 @@ def read_single_cell_experiment(
         with file-backed arrays in the assays.
     """
 
-    metadata["type"] = "range_summarized_experiment"
-    rse = dl.alt_read_object(path, metadata=metadata, **kwargs)
+    # see comments in read_ranged_summarized_experiment in dolomite_se.
+    rse = dlse.read_ranged_summarized_experiment(path, metadata=metadata, **kwargs)
 
     _main_expt_name = None
     if "main_experiment_name" in metadata["single_cell_experiment"]:
